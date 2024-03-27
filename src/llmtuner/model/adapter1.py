@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import torch
-from peft import LoraConfig, LoraModel, PeftModel, TaskType, get_peft_model, VeraConfig
+from peft import LoraConfig, LoraModel, PeftModel, TaskType, get_peft_model
 from transformers.integrations import is_deepspeed_zero3_enabled
 
 from ..extras.logging import get_logger
@@ -87,7 +87,7 @@ def init_adapter(
         logger.info("Set trainable layers: {}".format(",".join(map(str, trainable_layer_ids))))
 
     if finetuning_args.finetuning_type == "lora":
-        logger.info("Fine-tuning method: {}".format("DoRA" if finetuning_args.use_dora else ("VeRA" if finetuning_args.use_vera else "LoRA")))
+        logger.info("Fine-tuning method: {}".format("DoRA" if finetuning_args.use_dora else "LoRA"))
         adapter_to_resume = None
 
         if model_args.adapter_name_or_path is not None:
@@ -132,9 +132,7 @@ def init_adapter(
             if finetuning_args.use_dora and getattr(model, "quantization_method", None) is not None:
                 if getattr(model, "quantization_method", None) != QuantizationMethod.BITS_AND_BYTES:
                     raise ValueError("DoRA is not compatible with PTQ-quantized models.")
-            if finetuning_args.use_vera and getattr(model, "quantization_method", None) is not None:
-                if getattr(model, "quantization_method", None) != QuantizationMethod.BITS_AND_BYTES:
-                    raise ValueError("VeRA is not compatible with PTQ-quantized models.")
+
             peft_kwargs = {
                 "r": finetuning_args.lora_rank,
                 "target_modules": target_modules,
@@ -149,24 +147,12 @@ def init_adapter(
                 unsloth_peft_kwargs = {"model": model, "max_seq_length": model_args.model_max_length}
                 model = FastLanguageModel.get_peft_model(**peft_kwargs, **unsloth_peft_kwargs)
             else:
-                lora_config = (
-                    VeraConfig(
-                        task_type=TaskType.CAUSAL_LM,
-                        inference_mode=False,
-                        d_initial=0.1,
-                        modules_to_save=finetuning_args.additional_target,
-                        r=finetuning_args.lora_rank,
-                        target_modules=target_modules,
-                    )
-                    if finetuning_args.use_vera
-                    else 
-                    LoraConfig(
-                        task_type=TaskType.CAUSAL_LM,
-                        inference_mode=False,
-                        modules_to_save=finetuning_args.additional_target,
-                        use_dora=finetuning_args.use_dora,
-                        **peft_kwargs,
-                    )
+                lora_config = LoraConfig(
+                    task_type=TaskType.CAUSAL_LM,
+                    inference_mode=False,
+                    modules_to_save=finetuning_args.additional_target,
+                    use_dora=finetuning_args.use_dora,
+                    **peft_kwargs,
                 )
                 model = get_peft_model(model, lora_config)
 

@@ -1,0 +1,12 @@
+CUDA_VISIBLE_DEVICES=7 python src/evaluate.py \
+    --model_name_or_path /data0/ryang/Llama-2-7b-hf \
+    --adapter_name_or_path /data0/ryang/saves/LLaMA2-7B/dora/alpaca_zh \
+    --template alpaca \
+    --finetuning_type lora \
+    --task cmmlu \
+    --use_dora \
+    --split test \
+    --lang zh \
+    --n_shot 5 \
+    --batch_size 4 \
+    --save_dir /data0/ryang/saves/LLaMA2-7B/dora/alpaca_zh/eval

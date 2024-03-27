@@ -2,7 +2,7 @@
 
 CUDA_VISIBLE_DEVICES=0 python ../../src/train_bash.py \
     --stage sft \
-    --do_predict \
+    --do_eval \
     --model_name_or_path /data0/ryang/Llama-2-7b-hf \
     --adapter_name_or_path /data0/ryang/saves/LLaMA2-7B/lora/commonsense \
     --dataset commonsense \

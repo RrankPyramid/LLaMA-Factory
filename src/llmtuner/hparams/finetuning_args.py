@@ -82,6 +82,10 @@ class LoraArguments:
         default=False,
         metadata={"help": "Whether or not to use the weight-decomposed lora method (DoRA)."},
     )
+    use_vera: bool = field(
+        default=False,
+        metadata={"help": "Whether or not to use the Vector-based Random Matrix Adaptation method (VeRA)."},
+    )
     create_new_adapter: bool = field(
         default=False,
         metadata={"help": "Whether or not to create a new adapter with randomly initialized weight."},

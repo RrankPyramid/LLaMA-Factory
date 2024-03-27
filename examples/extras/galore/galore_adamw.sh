@@ -1,18 +1,19 @@
 #!/bin/bash
 
-CUDA_VISIBLE_DEVICES=0 python ../../../src/train_bash.py \
+CUDA_VISIBLE_DEVICES=6 python ../../../src/train_bash.py \
     --stage sft \
     --do_train \
-    --model_name_or_path meta-llama/Llama-2-7b-hf \
-    --dataset alpaca_gpt4_en,glaive_toolcall \
+    --model_name_or_path /data0/ryang/Llama-2-7b-hf \
+    --dataset mathinstruct \
     --dataset_dir ../../../data \
     --template default \
     --finetuning_type full \
+    --optim adamw_8bit \
     --use_galore \
     --galore_layerwise \
     --galore_target mlp,self_attn \
     --galore_rank 128 \
-    --output_dir ../../../saves/LLaMA2-7B/galore/sft \
+    --output_dir /data0/ryang/saves/LLaMA2-7B/galore/MathInstruct \
     --overwrite_cache \
     --overwrite_output_dir \
     --cutoff_len 1024 \
@@ -32,4 +33,4 @@ CUDA_VISIBLE_DEVICES=0 python ../../../src/train_bash.py \
     --max_samples 3000 \
     --val_size 0.1 \
     --plot_loss \
-    --fp16
+    --pure_bf16

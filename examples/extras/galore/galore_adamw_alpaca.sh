@@ -1,23 +1,26 @@
 #!/bin/bash
 
-CUDA_VISIBLE_DEVICES=5 python ../../src/train_bash.py \
+CUDA_VISIBLE_DEVICES=7 python ../../../src/train_bash.py \
     --stage sft \
     --do_train \
-    --use_dora \
     --model_name_or_path /data0/ryang/Llama-2-7b-hf \
-    --dataset commonsense_15k \
-    --dataset_dir ../../data \
-    --template default \
-    --finetuning_type lora \
-    --lora_target q_proj,v_proj \
-    --output_dir /data0/ryang/saves/LLaMA2-7B/dora/commonsense \
+    --dataset alpaca_zh \
+    --dataset_dir ../../../data \
+    --template alpaca \
+    --finetuning_type full \
+    --optim adamw_8bit \
+    --use_galore \
+    --galore_layerwise \
+    --galore_target mlp,self_attn \
+    --galore_rank 128 \
+    --output_dir /data0/ryang/saves/LLaMA2-7B/galore/alpaca_zh \
     --overwrite_cache \
     --overwrite_output_dir \
     --cutoff_len 1024 \
     --preprocessing_num_workers 16 \
     --per_device_train_batch_size 1 \
     --per_device_eval_batch_size 1 \
-    --gradient_accumulation_steps 8 \
+    --gradient_accumulation_steps 1 \
     --lr_scheduler_type cosine \
     --logging_steps 10 \
     --warmup_steps 20 \
@@ -30,4 +33,4 @@ CUDA_VISIBLE_DEVICES=5 python ../../src/train_bash.py \
     --max_samples 3000 \
     --val_size 0.1 \
     --plot_loss \
-    --bf16
+    --pure_bf16

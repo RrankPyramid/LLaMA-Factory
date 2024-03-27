@@ -1,16 +1,16 @@
 #!/bin/bash
 
-CUDA_VISIBLE_DEVICES=5 python ../../src/train_bash.py \
+CUDA_VISIBLE_DEVICES=2 python ../../src/train_bash.py \
     --stage sft \
     --do_train \
-    --use_dora \
+    --use_vera \
     --model_name_or_path /data0/ryang/Llama-2-7b-hf \
-    --dataset commonsense_15k \
+    --dataset alpaca_zh \
     --dataset_dir ../../data \
-    --template default \
+    --template alpaca \
     --finetuning_type lora \
     --lora_target q_proj,v_proj \
-    --output_dir /data0/ryang/saves/LLaMA2-7B/dora/commonsense \
+    --output_dir /data0/ryang/saves/LLaMA2-7B/vera/alpaca_zh \
     --overwrite_cache \
     --overwrite_output_dir \
     --cutoff_len 1024 \
